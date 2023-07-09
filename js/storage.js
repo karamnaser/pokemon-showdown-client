@@ -1058,6 +1058,11 @@ Storage.packedTeamIcons = function (buf) {
 	if (!buf) return '<em>(empty team)</em>';
 
 	return this.packedTeamNames(buf).map(function (species) {
+		//mychanges
+		if(species=="Kuramon"){
+			return '<span class="picon" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px' + ';float:left;overflow:visible"><span style="font-size:0px">' + toID(species) + '</span></span>';
+		}
+		//mychanges
 		return '<span class="picon" style="' + Dex.getPokemonIcon(species) + ';float:left;overflow:visible"><span style="font-size:0px">' + toID(species) + '</span></span>';
 	}).join('');
 };

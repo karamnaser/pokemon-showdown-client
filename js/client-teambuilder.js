@@ -1175,6 +1175,7 @@
 			if ($(window).width() < 640) this.show();
 		},
 		renderSet: function (set, i) {
+			console.log("set in renderset",set);
 			var species = this.curTeam.dex.species.get(set.species);
 			var isLetsGo = this.curTeam.format.includes('letsgo');
 			var isBDSP = this.curTeam.format.includes('bdsp');
@@ -1193,8 +1194,15 @@
 			buf += '<div class="setchart-nickname">';
 			buf += '<label>Nickname</label><input type="text" name="nickname" class="textbox" value="' + BattleLog.escapeHTML(set.name || '') + '" placeholder="' + BattleLog.escapeHTML(species.baseSpecies) + '" />';
 			buf += '</div>';
-			buf += '<div class="setchart" style="' + Dex.getTeambuilderSprite(set, this.curTeam.gen) + ';">';
-
+			//mycgange
+			if(set.species=="Kuramon"){
+				console.log("kuramon in renderset");
+				buf += '<div class="setchart" style="'+'background-image:url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png);background-position: 23px 19px;background-repeat:no-repeat;">';
+			}
+			//mychange also else is my change 
+			else{
+				buf += '<div class="setchart" style="' + Dex.getTeambuilderSprite(set, this.curTeam.gen) + ';">';
+			}
 			// icon
 			buf += '<div class="setcol setcol-icon">';
 			if (species.cosmeticFormes) {
@@ -1536,9 +1544,17 @@
 			for (var i = 0; i < this.clipboardCount(); i++) {
 				var res = this.clipboard[i];
 				var species = Dex.species.get(res.species);
-
+                 
 				buf += '<div class="result" data-id="' + i + '">';
+				//mychange
+				console.log("species in clipboredinnerhtml pokemon=",species);
+				if(species.name=="Kuramon"){
+					buf += '<div class="section"><span class="icon" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span>';
+				}
+				else{
 				buf += '<div class="section"><span class="icon" style="' + Dex.getPokemonIcon(species.name) + '"></span>';
+				}
+				//mychange
 				buf += '<span class="species">' + (species.name === species.baseSpecies ? BattleLog.escapeHTML(species.name) : (BattleLog.escapeHTML(species.baseSpecies) + '-<small>' + BattleLog.escapeHTML(species.name.substr(species.baseSpecies.length + 1)) + '</small>')) + '</span></div>';
 				buf += '<div class="section"><span class="ability-item">' + (BattleLog.escapeHTML(res.ability) || '<i>No ability</i>') + '<br />' + (BattleLog.escapeHTML(res.item) || '<i>No item</i>') + '</span></div>';
 				buf += '<div class="section no-border">';
@@ -1829,10 +1845,17 @@
 			for (var i = start; i < end; i++) {
 				var set = this.curSetList[i];
 				var pokemonicon = '<span class="picon pokemonicon-' + i + '" style="' + Dex.getPokemonIcon(set) + '"></span>';
+				
 				if (!set.species) {
 					buf += '<button disabled="disabled" class="addpokemon" aria-label="Add Pok&eacute;mon"><i class="fa fa-plus"></i></button> ';
 					isAdd = true;
-				} else if (i == this.curSetLoc) {
+				}
+				else if (i == this.curSetLoc) {
+					//mychange
+					if(set.species=="Kuramon"){ 
+						pokemonicon = '<span class="picon pokemonicon-' + i + '" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span>'; 
+					}
+					//mychange
 					buf += '<button disabled="disabled" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies || '<i class="fa fa-plus"></i>') + '</button> ';
 				} else {
 					buf += '<button name="selectPokemon" value="' + i + '" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies) + '</button> ';
@@ -1844,13 +1867,27 @@
 			return buf;
 		},
 		updatePokemonSprite: function () {
+			console.log("this.curSetLoc",this.curSetLoc);
 			var set = this.curSet;
+			if(set) console.log("set in update pokemon=",set);
+
 			if (!set) return;
+			
+			//mychange
+			if(set.species=="Kuramon"){
+				console.log("kuramon");
+				this.$('.setchart').attr('style','background-image:url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png);background-position: 23px 19px;background-repeat:no-repeat;');
+				this.$('.pokemonicon-' + this.curSetLoc).css('background', 'transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px');
+			}
+			
+			
+			else{
 
-			this.$('.setchart').attr('style', Dex.getTeambuilderSprite(set, this.curTeam.gen));
+				this.$('.setchart').attr('style', Dex.getTeambuilderSprite(set, this.curTeam.gen));
 
-			this.$('.pokemonicon-' + this.curSetLoc).css('background', Dex.getPokemonIcon(set).substr(11));
-
+				this.$('.pokemonicon-' + this.curSetLoc).css('background', Dex.getPokemonIcon(set).substr(11));
+			}
+			//mychange
 			var item = this.curTeam.dex.items.get(set.item);
 			if (item.id) {
 				this.$('.setcol-details .itemicon').css('background', Dex.getItemIcon(item).substr(11));
@@ -3375,10 +3412,19 @@
 			this.team = data.team;
 			for (var i = 0; i < data.team.length; i++) {
 				var set = data.team[i];
+				console.log("set in initialise=",set);
 				if (i !== data.i && i !== data.i + 1) {
 					buf += '<li><button name="moveHere" value="' + i + '"><i class="fa fa-arrow-right"></i> Move here</button></li>';
 				}
+				//mychange
+				if(set.species=="Kuramon"){
+					buf += '<li' + (i === data.i ? ' style="opacity:.3"' : ' style="opacity:.6"') + '><span class="picon" style="display:inline-block;vertical-align:middle;' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span> ' + BattleLog.escapeHTML(set.name || set.species) + '</li>'; 
+				}
+				//mychange
+				else{
 				buf += '<li' + (i === data.i ? ' style="opacity:.3"' : ' style="opacity:.6"') + '><span class="picon" style="display:inline-block;vertical-align:middle;' + Dex.getPokemonIcon(set) + '"></span> ' + BattleLog.escapeHTML(set.name || set.species) + '</li>';
+				}
+				
 			}
 			if (i !== data.i && i !== data.i + 1) {
 				buf += '<li><button name="moveHere" value="' + i + '"><i class="fa fa-arrow-right"></i> Move here</button></li>';
