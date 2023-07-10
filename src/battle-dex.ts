@@ -645,7 +645,12 @@ const Dex = new class implements ModdedDex {
 			if (spriteData.gen >= 4 && miscData['frontf'] && options.gender === 'F') {
 				name += '-f';
 			}
-
+			//mychange
+			if(name=="kuramon"){
+				spriteData.url='sprites'+'/'+name+'.png';
+				return spriteData;
+			}
+			//mychange
 			spriteData.url += dir + '/' + name + '.png';
 		}
 
@@ -705,6 +710,7 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPokemonIcon(pokemon: string | Pokemon | ServerPokemon | PokemonSet | null, facingLeft?: boolean) {
+		console.log("this is getPokemonIcon",pokemon);
 		if (pokemon === 'pokeball') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -0px 4px`;
 		} else if (pokemon === 'pokeball-statused') {
@@ -714,7 +720,9 @@ const Dex = new class implements ModdedDex {
 		} else if (pokemon === 'pokeball-none') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -80px 4px`;
 		}
-
+		else if(pokemon.name=="Kuramon"){
+			return 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;';
+		}
 		let id = toID(pokemon);
 		if (!pokemon || typeof pokemon === 'string') pokemon = null;
 		// @ts-ignore
@@ -782,6 +790,7 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getTeambuilderSprite(pokemon: any, gen: number = 0) {
+		console.log("this is getTeambuilderSprite function");
 		if (!pokemon) return '';
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');

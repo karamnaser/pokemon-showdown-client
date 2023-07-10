@@ -1849,8 +1849,7 @@
 				if (!set.species) {
 					buf += '<button disabled="disabled" class="addpokemon" aria-label="Add Pok&eacute;mon"><i class="fa fa-plus"></i></button> ';
 					isAdd = true;
-				}
-				else if (i == this.curSetLoc) {
+				}else if (i == this.curSetLoc) {
 					//mychange
 					if(set.species=="Kuramon"){ 
 						pokemonicon = '<span class="picon pokemonicon-' + i + '" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span>'; 
@@ -1858,6 +1857,11 @@
 					//mychange
 					buf += '<button disabled="disabled" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies || '<i class="fa fa-plus"></i>') + '</button> ';
 				} else {
+					//mychange
+					if(set.species=="Kuramon"){ 
+						pokemonicon = '<span class="picon pokemonicon-' + i + '" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span>'; 
+					}
+					//mychange
 					buf += '<button name="selectPokemon" value="' + i + '" class="pokemon">' + pokemonicon + BattleLog.escapeHTML(set.name || this.curTeam.dex.species.get(set.species).baseSpecies) + '</button> ';
 				}
 			}

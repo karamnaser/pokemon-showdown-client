@@ -710,7 +710,7 @@
 		}
 
 		function getTeambuilderSprite(pokemon, gen) {
-		    
+		    console.log("getTeambuilderSprite function");
 			if (!pokemon) return '';
 			const data = Dex.getTeambuilderSpriteData(pokemon, gen);
 			const shiny = (data.shiny ? '-shiny' : '');
