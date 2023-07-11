@@ -256,7 +256,9 @@ class PSTeams extends PSStreamModel<'team' | 'format'> {
 		let slashIndex = line.lastIndexOf('/', pipeIndex);
 		if (slashIndex < 0) slashIndex = bracketIndex; // line.slice(slashIndex + 1, pipeIndex) will be ''
 		let format = bracketIndex > 0 ? line.slice(0, bracketIndex) : 'gen7';
-		if (format.slice(0, 3) !== 'gen') format = 'gen6' + format;
+		//mychange
+		if (format.slice(0, 3) !== 'gen') format =  format;
+		//mychange
 		const name = line.slice(slashIndex + 1, pipeIndex);
 		return {
 			name,

@@ -1083,7 +1083,9 @@
 					var capacity = 6;
 					if (bracketIndex >= 0) {
 						format = name.substr(1, bracketIndex - 1);
-						if (format && format.slice(0, 3) !== 'gen') format = 'gen6' + format;
+						//mychange
+						if (format && format.slice(0, 3) !== 'gen') format = format;
+						//mychange
 						if (format && format.endsWith('-box')) {
 							format = format.slice(0, -4);
 							capacity = 24;

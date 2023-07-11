@@ -720,7 +720,7 @@ const Dex = new class implements ModdedDex {
 		} else if (pokemon === 'pokeball-none') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -80px 4px`;
 		}
-		else if(pokemon.name=="Kuramon"){
+		else if(pokemon?.name=="Kuramon"){
 			return 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;';
 		}
 		let id = toID(pokemon);
