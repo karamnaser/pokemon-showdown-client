@@ -965,7 +965,13 @@ class ModdedDex {
 					Object.assign(data, table.overrideSpeciesData[id]);
 				}
 			}
-			if (this.modid !== `gen${this.gen}`) {
+			if(this.modid=="gen10"){this.modid="gendigimon";this.gen=10};
+			if (this.modid == "gendigimon") {
+				const table = window.BattleTeambuilderTable[this.modid];
+				if (id in table.overrideSpeciesData) {
+					Object.assign(data, table.overrideSpeciesData);
+				}
+			}else if (this.modid !== `gen${this.gen}`) {
 				const table = window.BattleTeambuilderTable[this.modid];
 				if (id in table.overrideSpeciesData) {
 					Object.assign(data, table.overrideSpeciesData[id]);

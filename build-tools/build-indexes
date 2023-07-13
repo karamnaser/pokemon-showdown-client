@@ -354,7 +354,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			return genStr;
 		})();
 		// process.stdout.write("" + gen + (isDoubles ? " doubles" : "") + "... ");
-		const pokemon = Object.keys(Dex.data.Pokedex);
+		let pokemon = Object.keys(Dex.data.Pokedex);
+		let digimons=Object.keys(Dex.mod("gendigimon").data.Pokedex);
+		pokemon=Object.assign(pokemon,digimons);
 		pokemon.sort();
 		const tierTable = {};
 		const overrideTier = {};
@@ -1045,8 +1047,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	//
 	// Mods
 	//
-
-	for (const mod of ['gendigimon']) {
+	/* for (const mod of ['gendigimon']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
@@ -1059,9 +1060,23 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 				overrideSpeciesData[id][key] = modEntry[key];
 			}
 		}
-	}
+		
+		const overrideMoveData = {};
+		BattleTeambuilderTable[mod].overrideMoveData = overrideMoveData;
+		for (const id in modData.Moves) {
+			const modEntry = modDex.moves.get(id);
+			for (const key of overrideMoveKeys) {
+				if (key === 'category' && modDex.gen <= 3) continue;
+				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
+					if (!overrideMoveData[id]) overrideMoveData[id] = {};
+					overrideMoveData[id][key] = modEntry[key];
+				}
+			}
+		}
+	} */
 	
-	for (const mod of ['gen7letsgo', 'gen8bdsp']) {
+	
+	for (const mod of ['gen7letsgo', 'gen8bdsp','gendigimon']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
@@ -1071,7 +1086,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			const modEntry = modDex.species.get(id);
 			const parentEntry = parentDex?.species.get(id);
 			for (const key of overrideSpeciesKeys) {
-				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
+				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry?.key || key=="universe")) {
 					if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
 					overrideSpeciesData[id][key] = modEntry[key];
 				}
@@ -1082,10 +1097,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		BattleTeambuilderTable[mod].overrideMoveData = overrideMoveData;
 		for (const id in modData.Moves) {
 			const modEntry = modDex.moves.get(id);
-			const parentEntry = parentDex.moves.get(id);
+			const parentEntry = parentDex?.moves.get(id);
 			for (const key of overrideMoveKeys) {
 				if (key === 'category' && modDex.gen <= 3) continue;
-				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
+				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry?.key) || key=="universe" ) {
 					if (!overrideMoveData[id]) overrideMoveData[id] = {};
 					overrideMoveData[id][key] = modEntry[key];
 				}
@@ -1096,9 +1111,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		BattleTeambuilderTable[mod].overrideAbilityData = overrideAbilityData;
 		for (const id in modData.Abilities) {
 			const modEntry = modDex.abilities.get(id);
-			const parentEntry = parentDex.abilities.get(id);
+			const parentEntry = parentDex?.abilities.get(id);
 			for (const key of overrideAbilityKeys) {
-				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
+				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry?.key) || key=="universe") {
 					if (!overrideAbilityData[id]) overrideAbilityData[id] = {};
 					overrideAbilityData[id][key] = modEntry[key];
 				}
