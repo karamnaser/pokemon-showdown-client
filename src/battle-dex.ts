@@ -965,6 +965,8 @@ class ModdedDex {
 					Object.assign(data, table.overrideSpeciesData[id]);
 				}
 			}
+			//somtime the modid get curupted or get a gen number i dont know why so i did some game to fix it so i can run the program 
+			//but ther will be need to check why that happend and fix issue for now the program workes
 			if(this.modid=="gen10"){this.modid="gendigimon";this.gen=10};
 			if (this.modid.includes("gend")) {
 				this.modid="gendigimon";
