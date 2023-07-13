@@ -45,12 +45,16 @@ function requireNoCache(pathSpec) {
 	process.stdout.write("Building `data/search-index.js`... ");
 
 	let index = [];
-
+	index = index.concat(Object.keys(Dex.mod("gendigimon").data.Pokedex).map(x => x + ' pokemon'));
 	index = index.concat(Object.keys(Dex.data.Pokedex).map(x => x + ' pokemon'));
 	index = index.concat(Object.keys(Dex.data.Moves).map(x => x + ' move'));
+	index = index.concat(Object.keys(Dex.mod("gendigimon").data.Moves).map(x => x + ' move'));
 	index = index.concat(Object.keys(Dex.data.Items).map(x => x + ' item'));
+	index = index.concat(Object.keys(Dex.mod("gendigimon").data.Items).map(x => x + ' item'));
 	index = index.concat(Object.keys(Dex.data.Abilities).map(x => x + ' ability'));
+	index = index.concat(Object.keys(Dex.mod("gendigimon").data.Abilities).map(x => x + ' ability'));
 	index = index.concat(Object.keys(Dex.data.TypeChart).map(x => toID(x) + ' type'));
+	index = index.concat(Object.keys(Dex.mod("gendigimon").data.TypeChart).map(x => x + ' type'));
 	index = index.concat(['physical', 'special', 'status'].map(x => toID(x) + ' category'));
 	index = index.concat(['monster', 'water1', 'bug', 'flying', 'field', 'fairy', 'grass', 'humanlike', 'water3', 'mineral', 'amorphous', 'water2', 'ditto', 'dragon', 'undiscovered'].map(x => toID(x) + ' egggroup'));
 	index = index.concat(['ou', 'uu', 'ru', 'nu', 'pu', 'lc', 'nfe', 'uber', 'uubl', 'rubl', 'nubl', 'publ', 'cap', 'caplc', 'capnfe'].map(x => toID(x) + ' tier'));
@@ -207,19 +211,19 @@ function requireNoCache(pathSpec) {
 			index.push('' + toID(name.slice(i2)) + ' ' + type + ' ' + id + ' ' + toID(name.slice(0, i2)).length);
 		}
 	}
-	for (const id in Dex.data.Pokedex) {
+	for (const id in Object.assign(Dex.data.Pokedex,Dex.mod("gendigimon").data.Pokedex)) {
 		const name = Dex.data.Pokedex[id].name;
 		generateAlias(id, name, 'pokemon');
 	}
-	for (const id in Dex.data.Moves) {
+	for (const id in Object.assign(Dex.data.Moves,Dex.mod("gendigimon").data.Moves)) {
 		const name = Dex.data.Moves[id].name;
 		generateAlias(id, name, 'move');
 	}
-	for (const id in Dex.data.Items) {
+	for (const id in Object.assign(Dex.data.Items,Dex.mod("gendigimon").data.Items)) {
 		const name = Dex.data.Items[id].name;
 		generateAlias(id, name, 'item');
 	}
-	for (const id in Dex.data.Abilities) {
+	for (const id in Object.assign(Dex.data.Abilities,Dex.mod("gendigimon").data.Abilities)) {
 		const name = Dex.data.Abilities[id].name;
 		generateAlias(id, name, 'ability');
 	}
@@ -871,12 +875,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	for (const id in DIGILearnsets) {
 		const species = Dex.mod('gendigimon').species.get(id);
 		const baseSpecies = Dex.mod('gendigimon').species.get(species.baseSpecies);
-		const validNum = (baseSpecies.num <= 151 && baseSpecies.num >= 1) || [808, 809].includes(baseSpecies.num);
-		if (!validNum) continue;
 		const learnset = DIGILearnsets[id].learnset;
 		BattleTeambuilderTable['gendigimon'].learnsets[id] = {};
 		for (const moveid in learnset) {
-			BattleTeambuilderTable['gendigimon'].learnsets[id][moveid] = 'digi';
+			BattleTeambuilderTable['gendigimon'].learnsets[id][moveid] = '10';
 		}
 	}
 	const G2Learnsets = Dex.mod('gen2').data.Learnsets;

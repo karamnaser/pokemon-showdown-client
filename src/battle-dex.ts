@@ -853,7 +853,7 @@ class ModdedDex {
 	pokeballs: string[] | null = null;
 	constructor(modid: ID) {
 		this.modid = modid;
-		let gen = parseInt(modid.substr(3, 1), 10);
+		let gen = (parseInt(modid.substr(3, 1), 10)==NaN ? 10:parseInt(modid.substr(3, 1), 10));
 		console.log("gen1=",gen)
 		if (modid=="gendigimon") gen=10;
 		console.log("gen2=",gen)

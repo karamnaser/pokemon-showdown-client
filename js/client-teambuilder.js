@@ -1834,7 +1834,7 @@
 			if ($(window).width() < 640) this.show();
 			this.$chart = this.$('.teambuilder-results');
 			this.search = new BattleSearch(this.$chart, this.$chart);
-			console.log("search",search);
+			console.log("this.search",this.search);
 			var self = this;
 			// fun fact: Backbone DOM events don't support scroll...
 			// I guess scroll doesn't bubble like other events
