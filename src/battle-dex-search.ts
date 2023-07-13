@@ -52,6 +52,7 @@ class DexSearch {
 		egggroup: 7,
 		category: 8,
 		article: 9,
+		universe: 10
 	};
 	static typeName = {
 		pokemon: 'Pok&eacute;mon',
@@ -549,10 +550,10 @@ abstract class BattleTypedSearch<T extends SearchType> {
 	 * (Abilities/items can affect what moves are sorted as usable.)
 	 */
 	set: PokemonSet | null = null;
-
-	protected formatType: 'doubles' | 'bdsp' | 'bdspdoubles' | 'letsgo' | 'metronome' | 'natdex' | 'nfe' |
+	//mychange
+	protected formatType: 'doubles' | 'bdsp' | 'bdspdoubles' | 'letsgo' | 'digimon' | 'metronome' | 'natdex' | 'nfe' |
 	'dlc1' | 'dlc1doubles' | 'stadium' | 'lc' | null = null;
-
+	//mychange
 	/**
 	 * Cached copy of what the results list would be with only base filters
 	 * (i.e. with an empty `query` and `filters`)
@@ -613,12 +614,21 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.formatType = 'letsgo';
 			this.dex = Dex.mod('gen7letsgo' as ID);
 		}
+		//mychange
+		if (format.includes('digimon')) {
+			this.formatType = 'digimon';
+			this.dex = Dex.mod('gendigimon' as ID);
+		}
+		//mychange
 		if (format.includes('nationaldex') || format.startsWith('nd') || format.includes('natdex')) {
 			format = (format.startsWith('nd') ? format.slice(2) :
 				format.includes('natdex') ? format.slice(6) : format.slice(11)) as ID;
 			this.formatType = 'natdex';
 			if (!format) format = 'ou' as ID;
 		}
+		//mychange
+		if (this.formatType === 'digimon') format = format.slice(6) as ID; 
+		//mychange
 		if (this.formatType === 'letsgo') format = format.slice(6) as ID;
 		if (format.includes('metronome')) {
 			this.formatType = 'metronome';
@@ -722,6 +732,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
+		//mychange
+		if (this.formatType === 'digimon') table = table['gendigimon'];
+		//mychange
 		if (speciesid in table.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
 		if (!species.exists) return '' as ID;
@@ -778,6 +791,9 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
+			//mychange
+			if (this.formatType === 'digimon') table = table['gendigimon'];
+			//mychange
 			let learnset = table.learnsets[learnsetid];
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
 				learnset[moveid].includes(genChar) ||
@@ -795,6 +811,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		let table = window.BattleTeambuilderTable;
 		const gen = this.dex.gen;
 		const tableKey = this.formatType === 'doubles' ? `gen${gen}doubles` :
+			this.formatType === 'digimon' ? 'gendigimon' :
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
 			this.formatType === 'bdspdoubles' ? 'gen8bdspdoubles' :
@@ -888,7 +905,11 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		const dex = this.dex;
 
 		let table = BattleTeambuilderTable;
-		if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
+		//mychange
+		if (this.formatType === 'digimon') {
+			table = table['gendigimon'];
+		//mychange
+		}else if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
 		} else if (isVGCOrBS) {
 			table = table['gen' + dex.gen + 'vgc'];
@@ -965,7 +986,8 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		else if (format === 'doublesubers') tierSet = tierSet.slice(slices.DUber);
 		else if (format === 'doublesou' && dex.gen > 4) tierSet = tierSet.slice(slices.DOU);
 		else if (format === 'doublesuu') tierSet = tierSet.slice(slices.DUU);
-		else if (format === 'doublesnu') tierSet = tierSet.slice(slices.DNU || slices.DUU);
+		else if (format === 'doublesnu') tierSet = tierSet.slice(slices.DNU || slices.DUU); 
+		else if(this.formatType === 'digimon') tierSet = tierSet.slice(slices.Uber); //mychange
 		else if (this.formatType?.startsWith('bdsp') || this.formatType === 'letsgo' || this.formatType === 'stadium') {
 			tierSet = tierSet.slice(slices.Uber);
 		} else if (!isDoublesOrBS) {
@@ -1481,6 +1503,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		let sketch = false;
 		let gen = '' + dex.gen;
 		let lsetTable = BattleTeambuilderTable;
+		//mychange
+		if (this.formatType === 'digimon') lsetTable = lsetTable['gendigimon'];
+		//mychange
 		if (this.formatType?.startsWith('bdsp')) lsetTable = lsetTable['gen8bdsp'];
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('dlc1')) lsetTable = lsetTable['gen8dlc1'];

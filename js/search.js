@@ -337,7 +337,7 @@
 		}
 
 		var gen = this.engine ? this.engine.dex.gen : 9;
-
+	
 		// type
 		buf += '<span class="col typecol">';
 		var types = pokemon.types;

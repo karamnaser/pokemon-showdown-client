@@ -648,13 +648,14 @@ Storage.unpackAllTeams = function (buffer) {
 		return JSON.parse(buffer).map(function (oldTeam) {
 			var format = oldTeam.format || 'gen9';
 			var capacity = 6;
-			//mychange
+			//mychange removed +6
 			if (format && format.slice(0, 3) !== 'gen') format =  format;
 			//mychange
 			if (format && format.endsWith('-box')) {
 				format = format.slice(0, -4);
 				capacity = 24;
 			}
+			//can add keys to set her
 			return {
 				name: oldTeam.name || '',
 				format: format,

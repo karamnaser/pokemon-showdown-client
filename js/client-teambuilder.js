@@ -24,6 +24,12 @@
 				if (this.curTeam.format.includes('letsgo')) {
 					this.curTeam.dex = Dex.mod('gen7letsgo');
 				}
+				//mychange
+				if (this.curTeam.format.includes('digimon')) {
+					this.curTeam.dex = Dex.mod('gendigimon');
+					this.curTeam.gen=10;
+				}
+				//mychange
 				if (this.curTeam.format.includes('bdsp')) {
 					this.curTeam.dex = Dex.mod('gen8bdsp');
 				}
@@ -693,6 +699,12 @@
 			if (this.curTeam.format.includes('letsgo')) {
 				this.curTeam.dex = Dex.mod('gen7letsgo');
 			}
+			//mychange
+			if (this.curTeam.format.includes('digimon')) {
+				this.curTeam.dex = Dex.mod('gendigimon');
+				this.curTeam.gen=10;
+			}
+			//mychange
 			if (this.curTeam.format.includes('bdsp')) {
 				this.curTeam.dex = Dex.mod('gen8bdsp');
 			}
@@ -1177,9 +1189,11 @@
 			if ($(window).width() < 640) this.show();
 		},
 		renderSet: function (set, i) {
-			console.log("set in renderset",set);
 			var species = this.curTeam.dex.species.get(set.species);
 			var isLetsGo = this.curTeam.format.includes('letsgo');
+			//mychange
+			var isDigimon = this.curTeam.format.includes('digimon');
+			//mychange
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
 			var buf = '<li value="' + i + '">';
@@ -1198,7 +1212,6 @@
 			buf += '</div>';
 			//mycgange
 			if(set.species=="Kuramon"){
-				console.log("kuramon in renderset");
 				buf += '<div class="setchart" style="'+'background-image:url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png);background-position: 23px 19px;background-repeat:no-repeat;">';
 			}
 			//mychange also else is my change 
@@ -1498,6 +1511,12 @@
 			if (this.curTeam.format.includes('letsgo')) {
 				this.curTeam.dex = Dex.mod('gen7letsgo');
 			}
+			//mychange
+			if (this.curTeam.format.includes('digimon')) {
+				this.curTeam.dex = Dex.mod('gendigimon');
+				this.curTeam.gen=10;
+			}
+			//mychange
 			if (this.curTeam.format.includes('bdsp')) {
 				this.curTeam.dex = Dex.mod('gen8bdsp');
 			}
@@ -1549,7 +1568,6 @@
                  
 				buf += '<div class="result" data-id="' + i + '">';
 				//mychange
-				console.log("species in clipboredinnerhtml pokemon=",species);
 				if(species.name=="Kuramon"){
 					buf += '<div class="section"><span class="icon" style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;' + '"></span>';
 				}
@@ -1665,7 +1683,7 @@
 				.val(Storage.exportTeam([this.curSet], this.curTeam.gen).trim())
 				.focus()
 				.select();
-
+				
 			this.getSmogonSets();
 		},
 		getSmogonSets: function () {
@@ -1673,7 +1691,7 @@
 
 			var format = this.curTeam.format;
 			// If we don't have a specific format, don't try and guess which sets to use.
-			if (format.match(/gen\d$/)) return;
+			if (format.match(`/gen\d$/`)) return;
 
 			var self = this;
 			this.smogonSets = this.smogonSets || {};
@@ -1786,6 +1804,7 @@
 		 *********************************************************/
 
 		updateSetView: function () {
+			
 			// pokemon
 			var buf = '<div class="pad">';
 			buf += '<button name="back"><i class="fa fa-chevron-left"></i> Team</button></div>';
@@ -1815,6 +1834,7 @@
 			if ($(window).width() < 640) this.show();
 			this.$chart = this.$('.teambuilder-results');
 			this.search = new BattleSearch(this.$chart, this.$chart);
+			console.log("search",search);
 			var self = this;
 			// fun fact: Backbone DOM events don't support scroll...
 			// I guess scroll doesn't bubble like other events
@@ -1873,15 +1893,11 @@
 			return buf;
 		},
 		updatePokemonSprite: function () {
-			console.log("this.curSetLoc",this.curSetLoc);
 			var set = this.curSet;
-			if(set) console.log("set in update pokemon=",set);
-
 			if (!set) return;
 			
 			//mychange
 			if(set.species=="Kuramon"){
-				console.log("kuramon");
 				this.$('.setchart').attr('style','background-image:url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png);background-position: 23px 19px;background-repeat:no-repeat;');
 				this.$('.pokemonicon-' + this.curSetLoc).css('background', 'transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px');
 			}
@@ -1910,7 +1926,6 @@
 			var stats = {hp:'', atk:'', def:'', spa:'', spd:'', spe:''};
 
 			var supportsEVs = !this.curTeam.format.includes('letsgo');
-
 			// stat cell
 			var buf = '<span class="statrow statrow-head"><label></label> <span class="statgraph"></span> <em>' + (supportsEVs ? 'EV' : 'AV') + '</em></span>';
 			var defaultEV = (this.curTeam.gen > 2 ? 0 : 252);
@@ -2649,6 +2664,9 @@
 			var buf = '';
 			var set = this.curSet;
 			var isLetsGo = this.curTeam.format.includes('letsgo');
+			//mychange
+			var isDigimon = this.curTeam.format.includes('digimon');
+			//mychange
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
 			var isHackmons = this.curTeam.format.includes('hackmons') || this.curTeam.format.endsWith('bh');
@@ -2749,6 +2767,9 @@
 			if (!set) return;
 			var species = this.curTeam.dex.species.get(set.species);
 			var isLetsGo = this.curTeam.format.includes('letsgo');
+			//mychange
+			var isDigimon = this.curTeam.format.includes('digimon');
+			//mychange
 			var isBDSP = this.curTeam.format.includes('bdsp');
 			var isNatDex = this.curTeam.format.includes('nationaldex') || this.curTeam.format.includes('natdex');
 
@@ -3418,7 +3439,6 @@
 			this.team = data.team;
 			for (var i = 0; i < data.team.length; i++) {
 				var set = data.team[i];
-				console.log("set in initialise=",set);
 				if (i !== data.i && i !== data.i + 1) {
 					buf += '<li><button name="moveHere" value="' + i + '"><i class="fa fa-arrow-right"></i> Move here</button></li>';
 				}
@@ -3475,6 +3495,7 @@
 	var AltFormPopup = this.AltFormPopup = Popup.extend({
 		type: 'semimodal',
 		initialize: function (data) {
+			console.log("AltFormPopup-data",data);
 			this.room = data.room;
 			this.curSet = data.curSet;
 			this.chartIndex = data.index;

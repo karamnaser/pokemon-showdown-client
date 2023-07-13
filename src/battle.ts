@@ -3354,6 +3354,7 @@ export class Battle {
 		}
 		case 'tier': {
 			this.tier = args[1];
+			console.log(this.tier);
 			if (this.tier.slice(-13) === 'Random Battle') {
 				this.speciesClause = true;
 			}
@@ -3364,6 +3365,11 @@ export class Battle {
 			if (this.tier.includes(`Let's Go`)) {
 				this.dex = Dex.mod('gen7letsgo' as ID);
 			}
+			//mychange
+			if (this.tier.includes(`Digimon`)) {
+				this.dex = Dex.mod('gendigimon' as ID);
+			}
+			//mychange
 			this.log(args);
 			break;
 		}

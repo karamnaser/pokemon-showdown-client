@@ -710,7 +710,6 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPokemonIcon(pokemon: string | Pokemon | ServerPokemon | PokemonSet | null, facingLeft?: boolean) {
-		console.log("this is getPokemonIcon",pokemon);
 		if (pokemon === 'pokeball') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -0px 4px`;
 		} else if (pokemon === 'pokeball-statused') {
@@ -790,7 +789,6 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getTeambuilderSprite(pokemon: any, gen: number = 0) {
-		console.log("this is getTeambuilderSprite function");
 		if (!pokemon) return '';
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');
@@ -855,7 +853,10 @@ class ModdedDex {
 	pokeballs: string[] | null = null;
 	constructor(modid: ID) {
 		this.modid = modid;
-		const gen = parseInt(modid.substr(3, 1), 10);
+		let gen = parseInt(modid.substr(3, 1), 10);
+		console.log("gen1=",gen)
+		if (modid=="gendigimon") gen=10;
+		console.log("gen2=",gen)
 		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
 		this.gen = gen;
 	}

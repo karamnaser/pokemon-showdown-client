@@ -323,9 +323,14 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	const STADIUM = [2.04, 1.04];
 	const NATDEX = [9.1, 8.1];
 	const OTHER = [9.2, 8.6, 8.4, 8.2, 8.1, -8.4, -8.6, 7.1];
-
+	//mychange
+	const DIGIMON=[10.1];
+	//mychange
 	// process.stdout.write("\n  ");
-	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...STADIUM, ...OTHER, ...NATDEX, ...LC]) {
+	//mychange
+	for (const genIdent of [...GENS, ...DOUBLES, ...VGC, ...NFE, ...STADIUM, ...OTHER, ...NATDEX, ...LC, ...DIGIMON]) {
+		const isDigimon = (genIdent === 10.1);
+	//mychange
 		const isLetsGo = (genIdent === 7.1);
 		const isBDSP = (genIdent === 8.6 || genIdent === -8.6);
 		const isMetBattle = ('' + genIdent).endsWith('.2');
@@ -339,6 +344,9 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const genNum = Math.floor(isDoubles ? -genIdent : genIdent);
 		const gen = (() => {
 			let genStr = 'gen' + genNum;
+			//mychange
+			if (isDigimon) genStr = 'gen' + 'digimon';
+			//mychange
 			if (isDLC1) genStr += 'dlc1';
 			if (isLetsGo) genStr += 'letsgo';
 			if (isBDSP) genStr += 'bdsp';
@@ -465,8 +473,13 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		const tiers = [];
 		const items = [];
 		const formatSlices = {};
-
-		if (isNatDex) {
+		if (isDigimon) {
+				BattleTeambuilderTable['gendigimon'] = {};
+				BattleTeambuilderTable['gendigimon']["learnsets"] = {};
+				BattleTeambuilderTable['gendigimon'].tiers = tiers;
+				BattleTeambuilderTable['gendigimon'].overrideTier = overrideTier;
+				BattleTeambuilderTable['gendigimon'].formatSlices = formatSlices;
+		}else if (isNatDex) {
 			BattleTeambuilderTable['gen' + genNum + 'natdex'] = {};
 			BattleTeambuilderTable['gen' + genNum + 'natdex'].tiers = tiers;
 			BattleTeambuilderTable['gen' + genNum + 'natdex'].overrideTier = overrideTier;
@@ -852,6 +865,18 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			}
 		}
 	}
+	const DIGILearnsets = Dex.mod('gendigimon').data.Learnsets;
+	for (const id in DIGILearnsets) {
+		const species = Dex.mod('gendigimon').species.get(id);
+		const baseSpecies = Dex.mod('gendigimon').species.get(species.baseSpecies);
+		const validNum = (baseSpecies.num <= 151 && baseSpecies.num >= 1) || [808, 809].includes(baseSpecies.num);
+		if (!validNum) continue;
+		const learnset = DIGILearnsets[id].learnset;
+		BattleTeambuilderTable['gendigimon'].learnsets[id] = {};
+		for (const moveid in learnset) {
+			BattleTeambuilderTable['gendigimon'].learnsets[id][moveid] = 'digi';
+		}
+	}
 	const G2Learnsets = Dex.mod('gen2').data.Learnsets;
 	for (const id in G2Learnsets) {
 		const learnset = G2Learnsets[id].learnset;
@@ -934,7 +959,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	}
 
 	// Client relevant data that should be overriden by past gens and mods
-	const overrideSpeciesKeys = ['abilities', 'baseStats', 'cosmeticFormes', 'isNonstandard', 'requiredItems', 'types', 'unreleasedHidden'];
+	const overrideSpeciesKeys = ['universe','abilities', 'baseStats', 'cosmeticFormes', 'isNonstandard', 'requiredItems', 'types', 'unreleasedHidden'];
 	const overrideMoveKeys = ['accuracy', 'basePower', 'category', 'desc', 'flags', 'isNonstandard', 'noSketch', 'pp', 'priority', 'shortDesc', 'target', 'type'];
 	const overrideAbilityKeys = ['desc', 'isNonstandard', 'rating', 'shortDesc'];
 
@@ -1021,16 +1046,30 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 	// Mods
 	//
 
-	for (const mod of ['gen7letsgo', 'gen8bdsp']) {
+	for (const mod of ['gendigimon']) {
 		const modDex = Dex.mod(mod);
 		const modData = modDex.data;
 		const parentDex = Dex.forGen(modDex.gen);
-
 		const overrideSpeciesData = {};
 		BattleTeambuilderTable[mod].overrideSpeciesData = overrideSpeciesData;
 		for (const id in modData.Pokedex) {
 			const modEntry = modDex.species.get(id);
-			const parentEntry = parentDex.species.get(id);
+			for (const key of overrideSpeciesKeys) {
+				if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
+				overrideSpeciesData[id][key] = modEntry[key];
+			}
+		}
+	}
+	
+	for (const mod of ['gen7letsgo', 'gen8bdsp']) {
+		const modDex = Dex.mod(mod);
+		const modData = modDex.data;
+		const parentDex = Dex.forGen(modDex.gen);
+		const overrideSpeciesData = {};
+		BattleTeambuilderTable[mod].overrideSpeciesData = overrideSpeciesData;
+		for (const id in modData.Pokedex) {
+			const modEntry = modDex.species.get(id);
+			const parentEntry = parentDex?.species.get(id);
 			for (const key of overrideSpeciesKeys) {
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
@@ -1081,7 +1120,10 @@ console.log("DONE");
 process.stdout.write("Building `data/pokedex.js`... ");
 
 {
-	const Pokedex = requireNoCache('../data/pokemon-showdown/dist/data/pokedex.js').Pokedex;
+	let Pokedex = requireNoCache('../data/pokemon-showdown/dist/data/pokedex.js').Pokedex;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	Pokedex=Object.assign(Pokedex,modData.Pokedex);
 	for (const id in Pokedex) {
 		const entry = Pokedex[id];
 		if (Dex.data.FormatsData[id]) {
@@ -1106,7 +1148,10 @@ console.log("DONE");
 process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.js`...");
 
 {
-	const Moves = requireNoCache('../data/pokemon-showdown/dist/data/moves.js').Moves;
+	let Moves = requireNoCache('../data/pokemon-showdown/dist/data/moves.js').Moves;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      Moves=Object.assign(Moves,modData.Moves);
 	for (const id in Moves) {
 		const move = Dex.moves.get(Moves[id].name);
 		if (move.desc) Moves[id].desc = move.desc;
@@ -1122,7 +1167,10 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const Items = requireNoCache('../data/pokemon-showdown/dist/data/items.js').Items;
+	let Items = requireNoCache('../data/pokemon-showdown/dist/data/items.js').Items;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      Items=Object.assign(Items,modData.Items);
 	for (const id in Items) {
 		const item = Dex.items.get(Items[id].name);
 		if (item.desc) Items[id].desc = item.desc;
@@ -1137,7 +1185,10 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const Abilities = requireNoCache('../data/pokemon-showdown/dist/data/abilities.js').Abilities;
+	let Abilities = requireNoCache('../data/pokemon-showdown/dist/data/abilities.js').Abilities;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      Abilities=Object.assign(Abilities,modData.Abilities);
 	for (const id in Abilities) {
 		const ability = Dex.abilities.get(Abilities[id].name);
 		if (ability.desc) Abilities[id].desc = ability.desc;
@@ -1152,7 +1203,10 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const TypeChart = requireNoCache('../data/pokemon-showdown/dist/data/typechart.js').TypeChart;
+	let TypeChart = requireNoCache('../data/pokemon-showdown/dist/data/typechart.js').TypeChart;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      TypeChart=Object.assign(TypeChart,modData.TypeChart);
 	const buf = 'exports.BattleTypeChart = ' + es3stringify(TypeChart) + ';';
 	fs.writeFileSync('data/typechart.js', buf);
 }
@@ -1172,7 +1226,10 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const FormatsData = requireNoCache('../data/pokemon-showdown/dist/data/formats-data.js').FormatsData;
+	let FormatsData = requireNoCache('../data/pokemon-showdown/dist/data/formats-data.js').FormatsData;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      FormatsData=Object.assign(FormatsData,modData.FormatsData);
 	const buf = 'exports.BattleFormatsData = ' + es3stringify(FormatsData) + ';';
 	fs.writeFileSync('data/formats-data.js', buf);
 }
@@ -1182,7 +1239,8 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const Formats = requireNoCache('../data/pokemon-showdown/dist/config/formats.js').Formats;
+	let Formats = requireNoCache('../data/pokemon-showdown/dist/config/formats.js').Formats;
+	Formats=Object.assign(Formats,requireNoCache('../data/pokemon-showdown/dist/config/custom-formats.js').Formats);
 	const buf = 'exports.Formats = ' + es3stringify(Formats) + ';';
 	fs.writeFileSync('data/formats.js', buf);
 }
@@ -1192,7 +1250,10 @@ process.stdout.write("Building `data/moves,items,abilities,typechart,learnsets.j
  *********************************************************/
 
 {
-	const Learnsets = requireNoCache('../data/pokemon-showdown/dist/data/learnsets.js').Learnsets;
+	let Learnsets = requireNoCache('../data/pokemon-showdown/dist/data/learnsets.js').Learnsets;
+	const modDex = Dex.mod("gendigimon");
+	const modData = modDex.data;
+	      Learnsets=Object.assign(Learnsets,modData.Learnsets);
 	const buf = 'exports.BattleLearnsets = ' + es3stringify(Learnsets) + ';';
 	fs.writeFileSync('data/learnsets.js', buf);
 	fs.writeFileSync('data/learnsets.json', JSON.stringify(Learnsets));
