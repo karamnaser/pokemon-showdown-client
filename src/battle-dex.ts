@@ -853,11 +853,11 @@ class ModdedDex {
 	pokeballs: string[] | null = null;
 	constructor(modid: ID) {
 		this.modid = modid;
-		let gen = (parseInt(modid.substr(3, 1), 10)==NaN ? 10:parseInt(modid.substr(3, 1), 10));
-		console.log("gen1=",gen)
-		if (modid=="gendigimon") gen=10;
-		console.log("gen2=",gen)
-		if (!modid.startsWith('gen') || !gen) throw new Error("Unsupported modid");
+		let gen = parseInt(modid.substr(3, 1), 10);
+		console.log("gen2=",gen);
+		console.log("modid=",modid);
+		if (!modid.startsWith('gen') || (!gen && !modid.includes("gend"))) throw new Error("Unsupported modid");
+		if (modid.includes("gend")) this.gen=10;
 		this.gen = gen;
 	}
 	moves = {
@@ -966,8 +966,10 @@ class ModdedDex {
 				}
 			}
 			if(this.modid=="gen10"){this.modid="gendigimon";this.gen=10};
-			if (this.modid == "gendigimon") {
-				const table = window.BattleTeambuilderTable[this.modid];
+			if (this.modid.includes("gend")) {
+				this.modid="gendigimon";
+				this.gen=10;
+				const table = window.BattleTeambuilderTable["gendigimon"];
 				if (id in table.overrideSpeciesData) {
 					Object.assign(data, table.overrideSpeciesData);
 				}
