@@ -2062,7 +2062,6 @@ export class PokemonSprite extends Sprite {
 	}
 	reset(pokemon: Pokemon) {
 		this.clearEffects();
-
 		if (pokemon.volatiles.formechange || pokemon.volatiles.dynamax || pokemon.volatiles.terastallize) {
 			if (!this.oldsp) this.oldsp = this.sp;
 			this.sp = Dex.getSpriteData(pokemon, this.isFrontSprite, {
@@ -2486,7 +2485,6 @@ export class PokemonSprite extends Sprite {
 		}
 		this.sp = sp;
 		this.cryurl = sp.cryurl;
-
 		if (!this.scene.animating) return;
 		let speciesid = toID(pokemon.getSpeciesForme());
 		let doCry = false;

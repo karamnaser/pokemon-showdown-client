@@ -646,11 +646,12 @@ const Dex = new class implements ModdedDex {
 				name += '-f';
 			}
 			//mychange
-			if(name.slice(-3).includes("mon")){
+			
+			if(name.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.speciesForme.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
 				if(isFront){
-					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${name.toLowerCase()}.png`;
+					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimonani/${name.toLowerCase()}.gif`;
 				}else{
-					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimon-back/${name.toLowerCase()}.png`
+					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimonani-back/${name.toLowerCase()}.gif`
 				}
 				
 				return spriteData;
@@ -715,14 +716,18 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPokemonIcon(pokemon: string | Pokemon | ServerPokemon | PokemonSet | null, facingLeft?: boolean) {
+		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
+		let top = Math.floor(num / 12) * 30;
+		let left = (num % 12) * 40;
+		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 		if(typeof pokemon == 'object'){
 			let digimon_name = pokemon.species? pokemon.species:pokemon.name; 
 			if(pokemon.species?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.name?.slice(-10).includes("mon" || "mon-x" || "Evil" || "Evil-X")){
-				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${digimon_name.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}`;
+				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${digimon_name.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}${fainted}`;
 			}
 		}else if(typeof pokemon=='string'){
 			if(pokemon?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || " Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
-			return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}`;
+			return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}${fainted}`;
 			}
 		}else if (pokemon === 'pokeball') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -0px 4px`;
@@ -744,11 +749,7 @@ const Dex = new class implements ModdedDex {
 			// @ts-ignore
 			id = toID(pokemon.volatiles.formechange[1]);
 		}
-		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
-
-		let top = Math.floor(num / 12) * 30;
-		let left = (num % 12) * 40;
-		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
+		
 		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v13) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
@@ -800,7 +801,6 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getTeambuilderSprite(pokemon: any, gen: number = 0) {
-		console.log("pokemon in teambuilder function",pokemon);
 		if (!pokemon) return '';
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');
@@ -876,8 +876,6 @@ class ModdedDex {
 	constructor(modid: ID) {
 		this.modid = modid;
 		let gen = parseInt(modid.substr(3, 1), 10);
-		console.log("gen2=",gen);
-		console.log("modid=",modid);
 		if (!modid.startsWith('gen') || (!gen && !modid.includes("gend"))) throw new Error("Unsupported modid");
 		if (modid.includes("gend")) this.gen=10;
 		this.gen = gen;
