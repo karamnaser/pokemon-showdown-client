@@ -302,14 +302,8 @@
 
 		// icon
 		buf += '<span class="col iconcol">';
-		if(pokemon.name=="Kuramon"){
-			buf += '<span style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px'+'"></span>';
-		}
-		else{
-			buf += '<span style="' + Dex.getPokemonIcon(pokemon.name) + '"></span>';
-		}
+		buf += '<span style="' + Dex.getPokemonIcon(pokemon.name) + '"></span>';
 		buf += '</span> ';
-
 		// name
 		var name = pokemon.name;
 		var tagStart = (pokemon.forme ? name.length - pokemon.forme.length - 1 : 0);
@@ -408,14 +402,7 @@
 
 		// icon
 		buf += '<span class="col iconcol">';
-		//mychanges
-		if(pokemon.name=="Kuramon"){
-			buf += '<span style="' + 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px'+'"></span>';
-		}
-		else{
-			buf += '<span style="' + Dex.getPokemonIcon(pokemon.name) + '"></span>';
-		}
-		//mychanges
+		buf += '<span style="' + Dex.getPokemonIcon(pokemon.name) + '"></span>';
 		buf += '</span> ';
 
 		// name

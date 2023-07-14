@@ -646,8 +646,13 @@ const Dex = new class implements ModdedDex {
 				name += '-f';
 			}
 			//mychange
-			if(name=="kuramon"){
-				spriteData.url='sprites'+'/'+name+'.png';
+			if(name.slice(-3).includes("mon")){
+				if(isFront){
+					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${name.toLowerCase()}.png`;
+				}else{
+					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimon-back/${name.toLowerCase()}.png`
+				}
+				
 				return spriteData;
 			}
 			//mychange
@@ -710,7 +715,16 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPokemonIcon(pokemon: string | Pokemon | ServerPokemon | PokemonSet | null, facingLeft?: boolean) {
-		if (pokemon === 'pokeball') {
+		if(typeof pokemon == 'object'){
+			let digimon_name = pokemon.species? pokemon.species:pokemon.name; 
+			if(pokemon.species?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.name?.slice(-10).includes("mon" || "mon-x" || "Evil" || "Evil-X")){
+				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${digimon_name.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}`;
+			}
+		}else if(typeof pokemon=='string'){
+			if(pokemon?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || " Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
+			return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}`;
+			}
+		}else if (pokemon === 'pokeball') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -0px 4px`;
 		} else if (pokemon === 'pokeball-statused') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -40px 4px`;
@@ -718,9 +732,6 @@ const Dex = new class implements ModdedDex {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -80px 4px;opacity:.4;filter:contrast(0)`;
 		} else if (pokemon === 'pokeball-none') {
 			return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-pokeball-sheet.png) no-repeat scroll -80px 4px`;
-		}
-		else if(pokemon?.name=="Kuramon"){
-			return 'background:transparent url(http://play.pokemonshowdown.com/sprites/digimon/sprites/digimon/kuramon.png) no-repeat;background-size: 40px 30px;';
 		}
 		let id = toID(pokemon);
 		if (!pokemon || typeof pokemon === 'string') pokemon = null;
@@ -789,10 +800,21 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getTeambuilderSprite(pokemon: any, gen: number = 0) {
+		console.log("pokemon in teambuilder function",pokemon);
 		if (!pokemon) return '';
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');
+		if(typeof pokemon == 'object'){
+			if(pokemon.species?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
+				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.species.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-position:${20}px ${19}px`;
+			}
+		}else if(typeof pokemon=='string'){
+			if(pokemon?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
+			return `background-image:url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-position:${20}px ${19}px`;
+			}
+		}else{
 		return 'background-image:url(' + Dex.resourcePrefix + data.spriteDir + shiny + '/' + data.spriteid + '.png);background-position:' + data.x + 'px ' + data.y + 'px;background-repeat:no-repeat';
+		}
 	}
 
 	getItemIcon(item: any) {

@@ -121,7 +121,6 @@ class DexSearch {
 			this.sortCol = null;
 		}
 		this.typedSearch = this.getTypedSearch(searchType, format, speciesOrSet);
-		console.log("this.typedSearch:",this.typedSearch);
 		if (this.typedSearch) this.dex = this.typedSearch.dex;
 	}
 
@@ -658,7 +657,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		if (!searchType || !this.set) return;
 	}
 	getResults(filters?: SearchFilter[] | null, sortCol?: string | null, reverseSort?: boolean): SearchRow[] {
-		console.log("getresult");
+		
 		if (sortCol === 'type') {
 			return [this.sortRow!, ...BattleTypeSearch.prototype.getDefaultResults.call(this)];
 		} else if (sortCol === 'category') {
@@ -669,7 +668,6 @@ abstract class BattleTypedSearch<T extends SearchType> {
 
 		if (!this.baseResults) {
 			this.baseResults = this.getBaseResults();
-			console.log("this.baseResults",this.baseResults);
 		}
 
 		if (!this.baseIllegalResults) {
@@ -912,7 +910,6 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		//mychange
 		if (this.formatType === 'digimon') {
 			table = table['gendigimon'];
-			console.log("digimon-table",table);
 		//mychange
 		}else if ((format.endsWith('cap') || format.endsWith('caplc')) && dex.gen < 9) {
 			table = table['gen' + dex.gen];
@@ -952,7 +949,6 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		} else if (this.formatType === 'stadium') {
 			table = table['gen' + dex.gen + 'stadium' + (dex.gen > 1 ? dex.gen : '')];
 		}
-		console.log("table.tiers",table.tiers);
 		if (!table.tierSet) {
 			table.tierSet = table.tiers.map((r: any) => {
 				if (typeof r === 'string') return ['pokemon', r];
