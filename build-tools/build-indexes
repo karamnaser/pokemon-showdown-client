@@ -424,6 +424,10 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 					if (species.name === 'Pikachu-Alola') return 'Illegal';
 					return species.tier;
 				}
+				if (isDigimon) {
+					if (!id.slice(-20).includes("mon")) return 'Illegal';
+					return species.tier;
+				}
 				if (isVGC) {
 					if (species.isNonstandard && species.isNonstandard !== 'Gigantamax') return 'Illegal';
 					if (baseSpecies.tags.includes('Mythical')) return 'Mythical';

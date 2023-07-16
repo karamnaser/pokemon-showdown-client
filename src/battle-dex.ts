@@ -647,7 +647,7 @@ const Dex = new class implements ModdedDex {
 			}
 			//mychange
 			
-			if(name.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.speciesForme.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
+			if(name.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.speciesForme.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
 				if(isFront){
 					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimonani/${name.toLowerCase()}.gif`;
 				}else{
@@ -716,17 +716,14 @@ const Dex = new class implements ModdedDex {
 	}
 
 	getPokemonIcon(pokemon: string | Pokemon | ServerPokemon | PokemonSet | null, facingLeft?: boolean) {
-		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
-		let top = Math.floor(num / 12) * 30;
-		let left = (num % 12) * 40;
 		let fainted = ((pokemon as Pokemon | ServerPokemon)?.fainted ? `;opacity:.3;filter:grayscale(100%) brightness(.5)` : ``);
 		if(typeof pokemon == 'object'){
 			let digimon_name = pokemon.species? pokemon.species:pokemon.name; 
-			if(pokemon.species?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.name?.slice(-10).includes("mon" || "mon-x" || "Evil" || "Evil-X")){
+			if(pokemon.species?.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.name?.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X")){
 				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${digimon_name.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}${fainted}`;
 			}
 		}else if(typeof pokemon=='string'){
-			if(pokemon?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || " Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
+			if(pokemon?.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || " Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
 			return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-size: 40px 30px;${facingLeft?"transform: scaleX(-1)":""}${fainted}`;
 			}
 		}else if (pokemon === 'pokeball') {
@@ -749,7 +746,9 @@ const Dex = new class implements ModdedDex {
 			// @ts-ignore
 			id = toID(pokemon.volatiles.formechange[1]);
 		}
-		
+		let num = this.getPokemonIconNum(id, pokemon?.gender === 'F', facingLeft);
+		let top = Math.floor(num / 12) * 30;
+		let left = (num % 12) * 40;
 		return `background:transparent url(${Dex.resourcePrefix}sprites/pokemonicons-sheet.png?v13) no-repeat scroll -${left}px -${top}px${fainted}`;
 	}
 
@@ -805,11 +804,11 @@ const Dex = new class implements ModdedDex {
 		const data = this.getTeambuilderSpriteData(pokemon, gen);
 		const shiny = (data.shiny ? '-shiny' : '');
 		if(typeof pokemon == 'object'){
-			if(pokemon.species?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
+			if(pokemon.species?.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
 				return `background:transparent url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.species.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-position:${20}px ${19}px`;
 			}
 		}else if(typeof pokemon=='string'){
-			if(pokemon?.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
+			if(pokemon?.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" || "Vaccine-X" || "Virus" || "Virus-X")){
 			return `background-image:url(${Dex.resourcePrefix}sprites/digimon/sprites/digimon/${pokemon.replace(" ","").replace("-","").toLowerCase()}.png) no-repeat;background-position:${20}px ${19}px`;
 			}
 		}else{
