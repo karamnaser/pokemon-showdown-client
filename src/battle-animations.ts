@@ -570,6 +570,7 @@ export class BattleScene implements BattleSceneStub {
 			else bg = 'fx/bg-spl.png';
 			this.setBgm(-101);
 		} else {
+			console.log("gen",gen);
 			if (gen <= 1) bg = 'fx/bg-gen1.png?';
 			else if (gen <= 2) bg = 'fx/bg-gen2.png?';
 			else if (gen <= 3) bg = 'fx/' + BattleBackdropsThree[this.numericId % BattleBackdropsThree.length] + '?';
