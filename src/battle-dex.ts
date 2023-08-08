@@ -649,9 +649,9 @@ const Dex = new class implements ModdedDex {
 			
 			if(name.slice(-20).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X") || pokemon.speciesForme.slice(-11).includes("mon" || "mon-x" || "Evil" || "Evil-X" || "Vaccine" ||  "Vaccine-X" || "Virus" || "Virus-X")){
 				if(isFront){
-					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimonani/${name.toLowerCase()}.gif`;
+					spriteData.url=`./sprites/digimons/${name.toLowerCase()}.png`;
 				}else{
-					spriteData.url=`${Dex.resourcePrefix}sprites/digimon/sprites/digimonani-back/${name.toLowerCase()}.gif`
+					spriteData.url=`./sprites/digimons-back/${name.toLowerCase()}.png`;  
 				}
 				
 				return spriteData;
